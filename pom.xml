@@ -50,7 +50,36 @@
     </dependencyManagement>
 
     <dependencies>
+
         <dependency>
+            <groupId>org.functionaljava</groupId>
+            <artifactId>functionaljava</artifactId>
+            <version>3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>5.0.1.Final</version>
+        </dependency>
+
+
+        <dependency>
+
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>${version.mockito}</version>
@@ -71,7 +100,7 @@
     </dependencies>
 
     <profiles>
-    
+
         <profile>
             <id>jacoco</id>
             <properties>
@@ -85,11 +114,11 @@
             </activation>
             <build>
                 <plugins>
-                   <plugin>
-                       <groupId>org.jacoco</groupId>
-                       <artifactId>jacoco-maven-plugin</artifactId>
-                       <version>${version.jacoco}</version>
-                       <executions>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${version.jacoco}</version>
+                        <executions>
                             <execution>
                                 <id>test</id>
                                 <phase>initialize</phase>
@@ -117,7 +146,7 @@
                 </plugins>
             </build>
         </profile>
-    
+
         <profile>
             <id>glassfish3</id>
             <activation>
@@ -238,7 +267,7 @@
                             <argLine>${surefire.argLine}</argLine>
                             <forkMode>once</forkMode>
                             <excludes>
-                              <exclude>**/*IT.java</exclude>
+                                <exclude>**/*IT.java</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -249,12 +278,12 @@
                             <goal>test</goal>
                         </goals>
                         <configuration>
-                          <skip>false</skip>
-                          <argLine>${it.surefire.argLine}</argLine>
-                          <forkMode>once</forkMode>
-                          <includes>
-                            <include>**/*IT.java</include>
-                          </includes>                                  
+                            <skip>false</skip>
+                            <argLine>${it.surefire.argLine}</argLine>
+                            <forkMode>once</forkMode>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
                         </configuration>
                     </execution>
                 </executions>

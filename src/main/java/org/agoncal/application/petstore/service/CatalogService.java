@@ -1,5 +1,6 @@
 package org.agoncal.application.petstore.service;
 
+import fj.data.Option;
 import org.agoncal.application.petstore.domain.Category;
 import org.agoncal.application.petstore.domain.Item;
 import org.agoncal.application.petstore.domain.Product;
@@ -34,20 +35,11 @@ public class CatalogService implements Serializable {
     // =              Public Methods        =
     // ======================================
 
-    public Category findCategory(Long categoryId) {
+    public Option<Category> findCategory(Long categoryId) {
         if (categoryId == null)
             throw new ValidationException("Invalid category id");
 
-        return em.find(Category.class, categoryId);
-    }
-
-    public Category findCategory(String categoryName) {
-        if (categoryName == null)
-            throw new ValidationException("Invalid category name");
-
-        TypedQuery<Category> typedQuery = em.createNamedQuery(Category.FIND_BY_NAME, Category.class);
-        typedQuery.setParameter("pname", categoryName);
-        return typedQuery.getSingleResult();
+        return Option.fromNull(em.find(Category.class, categoryId));
     }
 
     public List<Category> findAllCategories() {
@@ -80,8 +72,10 @@ public class CatalogService implements Serializable {
     public void removeCategory(Long categoryId) {
         if (categoryId == null)
             throw new ValidationException("Invalid category id");
-
-        removeCategory(findCategory(categoryId));
+        Option<Category> category = findCategory(categoryId);
+        if (category.isSome()) {
+            removeCategory(category.some());
+        }
     }
 
     public List<Product> findProducts(String categoryName) {
@@ -93,15 +87,10 @@ public class CatalogService implements Serializable {
         return typedQuery.getResultList();
     }
 
-    public Product findProduct(Long productId) {
+    public Option<Product> findProduct(Long productId) {
         if (productId == null)
             throw new ValidationException("Invalid product id");
-
-        Product product = em.find(Product.class, productId);
-        if (product != null) {
-            product.getItems(); // TODO check lazy loading
-        }
-        return product;
+        return Option.fromNull(em.find(Product.class, productId));
     }
 
     public List<Product> findAllProducts() {
@@ -138,7 +127,12 @@ public class CatalogService implements Serializable {
         if (productId == null)
             throw new ValidationException("Invalid product id");
 
-        removeProduct(findProduct(productId));
+        Option<Product> productOption = findProduct(productId);
+        if (productOption.isSome()) {
+            removeProduct(productOption.some());
+        } else {
+            //TODO log warn
+        }
     }
 
     public List<Item> findItems(Long productId) {
@@ -150,11 +144,10 @@ public class CatalogService implements Serializable {
         return typedQuery.getResultList();
     }
 
-    public Item findItem(final Long itemId) {
+    public Option<Item> findItem(final Long itemId) {
         if (itemId == null)
             throw new ValidationException("Invalid item id");
-
-        return em.find(Item.class, itemId);
+        return Option.fromNull(em.find(Item.class, itemId));
     }
 
     public List<Item> searchItems(String keyword) {
@@ -203,6 +196,11 @@ public class CatalogService implements Serializable {
         if (itemId == null)
             throw new ValidationException("itemId is null");
 
-        removeItem(findItem(itemId));
+        Option<Item> itemOption = findItem(itemId);
+        if (itemOption.isSome()) {
+            removeItem(itemOption.some());
+        } else {
+            //TODO log warn
+        }
     }
 }

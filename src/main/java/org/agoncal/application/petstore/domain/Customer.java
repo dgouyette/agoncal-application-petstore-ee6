@@ -1,5 +1,6 @@
 package org.agoncal.application.petstore.domain;
 
+import fj.data.Option;
 import org.agoncal.application.petstore.constraint.Login;
 import org.agoncal.application.petstore.exception.ValidationException;
 import org.hibernate.validator.constraints.Email;
@@ -175,12 +176,16 @@ public class Customer implements Serializable {
         this.lastname = lastname;
     }
 
-    public String getTelephone() {
-        return telephone;
+    public Option<String> getTelephone() {
+        return Option.fromNull(telephone);
     }
 
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
+    public void setTelephone(Option<String> telephone) {
+        if (telephone.isSome()) {
+            this.telephone = telephone.some();
+        } else {
+            this.telephone = null;
+        }
     }
 
     public String getEmail() {
@@ -190,7 +195,6 @@ public class Customer implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
-
 
     public Address getHomeAddress() {
         return homeAddress;

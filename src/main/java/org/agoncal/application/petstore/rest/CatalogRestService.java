@@ -1,5 +1,6 @@
 package org.agoncal.application.petstore.rest;
 
+import fj.data.Option;
 import org.agoncal.application.petstore.domain.Category;
 import org.agoncal.application.petstore.domain.Item;
 import org.agoncal.application.petstore.domain.Product;
@@ -53,8 +54,14 @@ public class CatalogRestService implements Serializable {
     @GET
     @Path("/category/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Category findCategory(@PathParam("id") Long categoryId) {
-        return catalogService.findCategory(categoryId);
+    public Response findCategory(@PathParam("id") Long categoryId) {
+        Option<Category> categoryOption = catalogService.findCategory(categoryId);
+        if (categoryOption.isSome()) {
+            return Response.ok(categoryOption.some()).build();
+
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 
     @POST
@@ -92,8 +99,14 @@ public class CatalogRestService implements Serializable {
     @GET
     @Path("/product/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Product findProduct(@PathParam("id") Long productId) {
-        return catalogService.findProduct(productId);
+    public Response findProduct(@PathParam("id") Long productId) {
+        Option<Product> productOption = catalogService.findProduct(productId);
+        if (productOption.isSome()) {
+            return Response.ok(productOption.some()).build();
+
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 
     @POST
@@ -131,8 +144,13 @@ public class CatalogRestService implements Serializable {
     @GET
     @Path("/item/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Item findItem(@PathParam("id") Long itemId) {
-        return catalogService.findItem(itemId);
+    public Response findItem(@PathParam("id") Long itemId) {
+        Option<Item> itemOption = catalogService.findItem(itemId);
+        if (itemOption.isSome()) {
+            return Response.ok(itemOption.some()).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 
     @POST

@@ -1,5 +1,6 @@
 package org.agoncal.application.petstore.web;
 
+import fj.data.Option;
 import org.agoncal.application.petstore.domain.*;
 import org.agoncal.application.petstore.service.CatalogService;
 import org.agoncal.application.petstore.service.OrderService;
@@ -49,7 +50,7 @@ public class ShoppingCartController extends Controller implements Serializable {
     // ======================================
 
     public String addItemToCart() {
-        Item item = catalogBean.findItem(getParamId("itemId"));
+        Option<Item> itemOption = catalogBean.findItem(getParamId("itemId"));
 
         // Start conversation
         if (conversation.isTransient()) {
@@ -58,27 +59,34 @@ public class ShoppingCartController extends Controller implements Serializable {
         }
 
         boolean itemFound = false;
-        for (CartItem cartItem : cartItems) {
-            // If item already exists in the shopping cart we just change the quantity
-            if (cartItem.getItem().equals(item)) {
-                cartItem.setQuantity(cartItem.getQuantity() + 1);
-                itemFound = true;
+
+        if (itemOption.isSome()) {
+
+            for (CartItem cartItem : cartItems) {
+                // If item already exists in the shopping cart we just change the quantity
+                if (cartItem.getItem().equals(itemOption.some())) {
+                    cartItem.setQuantity(cartItem.getQuantity() + 1);
+                    itemFound = true;
+                }
             }
+            if (!itemFound)
+                // Otherwise it's added to the shopping cart
+                cartItems.add(new CartItem(itemOption.some(), 1));
         }
-        if (!itemFound)
-            // Otherwise it's added to the shopping cart
-            cartItems.add(new CartItem(item, 1));
+
 
         return "showcart.faces";
     }
 
     public String removeItemFromCart() {
-        Item item = catalogBean.findItem(getParamId("itemId"));
+        Option<Item> itemOption = catalogBean.findItem(getParamId("itemId"));
 
-        for (CartItem cartItem : cartItems) {
-            if (cartItem.getItem().equals(item)) {
-                cartItems.remove(cartItem);
-                return null;
+        if (itemOption.isSome()) {
+            for (CartItem cartItem : cartItems) {
+                if (cartItem.getItem().equals(itemOption.some())) {
+                    cartItems.remove(cartItem);
+                    return null;
+                }
             }
         }
 

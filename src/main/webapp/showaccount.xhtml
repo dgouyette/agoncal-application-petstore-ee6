@@ -29,8 +29,12 @@
                 <h:outputText value="#{i18n.customer_email} :"/>
                 <h:outputText value="#{accountController.loggedinCustomer.email}"/>
 
-                <h:outputText value="#{i18n.customer_telephone} :"/>
-                <h:outputText value="#{accountController.loggedinCustomer.telephone}"/>
+
+
+                <h:outputText value="#{i18n.customer_telephone} :"  rendered="#{accountController.loggedinCustomer.telephone.isSome()}"/>
+                <h:outputText value="#{accountController.loggedinCustomer.telephone}" rendered="#{accountController.loggedinCustomer.telephone.isSome()}">
+                    <f:converter converterId="optionalConverter"/>
+                </h:outputText>
 
                 <h:outputText value="#{i18n.customer_dateOfBirth} (dd.MM.yyyy):"/>
                 <h:outputText value="#{accountController.loggedinCustomer.dateOfBirth}">
@@ -47,8 +51,11 @@
                 <h:outputText value="#{i18n.address_street1} :"/>
                 <h:outputText value="#{accountController.loggedinCustomer.homeAddress.street1}"/>
 
-                <h:outputText value="#{i18n.address_street2} :"/>
-                <h:outputText value="#{accountController.loggedinCustomer.homeAddress.street2}"/>
+
+                <h:outputText value="#{i18n.address_street2} :" />
+                <h:outputText value="#{accountController.loggedinCustomer.homeAddress.street2}">
+                    <f:converter converterId="optionalConverter"/>
+                </h:outputText>
 
                 <h:outputText value="#{i18n.address_city} :"/>
                 <h:outputText value="#{accountController.loggedinCustomer.homeAddress.city}"/>

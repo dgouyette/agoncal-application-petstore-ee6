@@ -34,7 +34,10 @@
                 <h:message for="email" style="color: red;"/>
 
                 <h:outputText value="#{i18n.customer_telephone}  :"/>
-                <h:inputText id="telephone" value="#{accountController.loggedinCustomer.telephone}"/>
+                <h:inputText id="telephone" value="#{accountController.loggedinCustomer.telephone}">
+                    <f:converter converterId="optionalConverter"/>
+
+                </h:inputText>
                 <h:message for="telephone" style="color: red;"/>
 
                 <h:outputText value="#{i18n.customer_dateOfBirth}  (dd.MM.yyyy):"/>
@@ -52,7 +55,8 @@
                 <h:message for="street1" style="color: red;"/>
 
                 <h:outputText value="#{i18n.address_street2}  :"/>
-                <h:inputText id="street2" value="#{accountController.loggedinCustomer.homeAddress.street2}"/>
+                <h:inputText id="street2" value="#{accountController.loggedinCustomer.homeAddress.street2}">
+                </h:inputText>
                 <h:message for="street2" style="color: red;"/>
 
                 <h:outputText value="*#{i18n.address_city}  :"/>

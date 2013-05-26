@@ -1,5 +1,6 @@
 package org.agoncal.application.petstore.web;
 
+import fj.data.Option;
 import org.agoncal.application.petstore.domain.Item;
 import org.agoncal.application.petstore.domain.Product;
 import org.agoncal.application.petstore.service.CatalogService;
@@ -51,14 +52,24 @@ public class CatalogController extends Controller implements Serializable {
     }
 
     public String doFindItems() {
-        product = catalogService.findProduct(productId);
-        items = catalogService.findItems(productId);
-        return "showitems.faces";
+        Option<Product> productOption = catalogService.findProduct(productId);
+        if (productOption.isSome()) {
+            items = catalogService.findItems(productId);
+            return "showitems.faces";
+        } else {
+            return "notfound.faces";
+        }
+
+
     }
 
     public String doFindItem() {
-        item = catalogService.findItem(itemId);
-        return "showitem.faces";
+        Option<Item> itemOption = catalogService.findItem(itemId);
+        if (itemOption.isSome()) {
+            return "showitem.faces";
+        } else {
+            return "notfound.faces";
+        }
     }
 
     public String doSearch() {
@@ -69,6 +80,7 @@ public class CatalogController extends Controller implements Serializable {
     // ======================================
     // =         Getters & setters          =
     // ======================================
+
 
     public Product getProduct() {
         return product;
