@@ -1,5 +1,6 @@
 package org.agoncal.application.petstore.domain;
 
+import fj.data.Either;
 import org.agoncal.application.petstore.constraint.Login;
 import org.agoncal.application.petstore.exception.ValidationException;
 import org.hibernate.validator.constraints.Email;
@@ -33,43 +34,54 @@ public class Customer implements Serializable {
     // =             Attributes             =
     // ======================================
 
+    public static final String FIND_BY_LOGIN = "Customer.findByLogin";
+
+    public static final String FIND_BY_LOGIN_PASSWORD = "Customer.findByLoginAndPassword";
+
+    public static final String FIND_ALL = "Customer.findAll";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @Column(unique = true, nullable = false, length = 10)
     @Login
     private String login;
+
     @Column(nullable = false, length = 10)
     @NotNull
     @Size(min = 1, max = 10)
     private String password;
+
     @Column(nullable = false)
     @NotNull
     @Size(min = 2, max = 50)
     private String firstname;
+
     @Column(nullable = false)
     @NotNull
     @Size(min = 2, max = 50)
     private String lastname;
+
     private String telephone;
+
     @Email
     private String email;
-    @Embedded
-    @Valid
-    private Address homeAddress = new Address();
-    @Column(name = "date_of_birth")
-    @Temporal(TemporalType.DATE)
-    private Date dateOfBirth;
-    @Transient
-    private Integer age;
 
     // ======================================
     // =             Constants              =
     // ======================================
 
-    public static final String FIND_BY_LOGIN = "Customer.findByLogin";
-    public static final String FIND_BY_LOGIN_PASSWORD = "Customer.findByLoginAndPassword";
-    public static final String FIND_ALL = "Customer.findAll";
+    @Embedded
+    @Valid
+    private Address homeAddress = new Address();
+
+    @Column(name = "date_of_birth")
+    @Temporal(TemporalType.DATE)
+    private Date dateOfBirth;
+
+    @Transient
+    private Integer age;
 
     // ======================================
     // =            Constructors            =
@@ -126,13 +138,15 @@ public class Customer implements Serializable {
      * @throws ValidationException thrown if the password is empty or different than the one
      *                             store in database
      */
-    public void matchPassword(String pwd) {
+    public Either<String, Void> matchPassword(String pwd) {
         if (pwd == null || "".equals(pwd))
-            throw new ValidationException("Invalid password");
+            return Either.left("Invalid password");
 
         // The password entered by the customer is not the same stored in database
         if (!pwd.equals(password))
-            throw new ValidationException("Passwords don't match");
+            return Either.left("Passwords don't match");
+
+        return Either.right(null);
     }
 
     // ======================================
@@ -190,7 +204,6 @@ public class Customer implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
-
 
     public Address getHomeAddress() {
         return homeAddress;

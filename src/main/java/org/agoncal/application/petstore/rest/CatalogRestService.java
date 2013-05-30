@@ -1,5 +1,6 @@
 package org.agoncal.application.petstore.rest;
 
+import fj.data.Either;
 import org.agoncal.application.petstore.domain.Category;
 import org.agoncal.application.petstore.domain.Item;
 import org.agoncal.application.petstore.domain.Product;
@@ -61,9 +62,13 @@ public class CatalogRestService implements Serializable {
     @Path("/category")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response createCategory(JAXBElement<Category> xmlCategory) {
-        Category category = catalogService.createCategory(xmlCategory.getValue());
-        URI uri = uriInfo.getAbsolutePathBuilder().path(category.getId().toString()).build();
-        return Response.created(uri).build();
+        Either<String, Category> categoryEither = catalogService.createCategory(xmlCategory.getValue());
+        if (categoryEither.isRight()) {
+            Category category = categoryEither.right().value();
+            URI uri = uriInfo.getAbsolutePathBuilder().path(category.getId().toString()).build();
+            return Response.created(uri).build();
+        }
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(categoryEither.left().value()).build();
     }
 
     @PUT

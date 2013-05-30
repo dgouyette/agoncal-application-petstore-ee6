@@ -1,5 +1,6 @@
 package org.agoncal.application.petstore.service;
 
+import fj.data.Either;
 import org.agoncal.application.petstore.domain.Category;
 import org.agoncal.application.petstore.domain.Item;
 import org.agoncal.application.petstore.domain.Product;
@@ -9,6 +10,7 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 
+import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -41,7 +43,9 @@ public class CatalogServiceIT extends AbstractServiceIT {
         Category category = new Category("Fish", "Any of numerous cold-blooded aquatic vertebrates characteristically having fins, gills, and a streamlined body");
 
         // Persists the object
-        category = catalogService.createCategory(category);
+        Either<String,Category> categoryEither = catalogService.createCategory(category);
+
+        assertThat(categoryEither.isRight()).isTrue();
         Long id = category.getId();
 
         // Finds all the objects and checks there's an extra one

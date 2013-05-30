@@ -1,5 +1,6 @@
 package org.agoncal.application.petstore.service;
 
+import fj.data.Either;
 import org.agoncal.application.petstore.domain.Category;
 import org.agoncal.application.petstore.domain.Item;
 import org.agoncal.application.petstore.domain.Product;
@@ -55,12 +56,11 @@ public class CatalogService implements Serializable {
         return typedQuery.getResultList();
     }
 
-    public Category createCategory(Category category) {
+    public Either<String, Category> createCategory(Category category) {
         if (category == null)
-            throw new ValidationException("Category object is null");
-
+            return Either.left("Category object is null");
         em.persist(category);
-        return category;
+        return Either.right(category);
     }
 
     public Category updateCategory(Category category) {
